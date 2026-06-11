@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CADO — O-Level study buddy with CORA study bot. Notes, flashcards, MCQs, theory and revision help for Cambridge syllabi.">
+  <title>CADO — O-Level Study Buddy</title>
+  <link rel="icon" href="assets/Cado-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/chemistry-lms.css">
+  <link rel="stylesheet" href="css/profile-hub.css">
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" class="svg-defs" aria-hidden="true">
+    <defs>
+      <linearGradient id="cora-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#67e8f9"/>
+        <stop offset="28%" stop-color="#22d3ee"/>
+        <stop offset="52%" stop-color="#06b6d4"/>
+        <stop offset="78%" stop-color="#38bdf8"/>
+        <stop offset="100%" stop-color="#60a5fa"/>
+      </linearGradient>
+    </defs>
+  </svg>
+  <div class="app-bg" aria-hidden="true"></div>
+
+  <header class="header header-sme" id="header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <a href="#" class="logo" data-nav="home" aria-label="CADO Home">
+          <img src="assets/Cado-logo.png?v=4" alt="CADO" class="logo-mark" decoding="async">
+        </a>
+
+        <nav class="nav-primary" aria-label="Main">
+        <div class="nav-dropdown" id="navDropdownStudy">
+          <button type="button" class="nav-menu-btn" aria-expanded="false" aria-haspopup="true" id="btnNavStudy">
+            Subjects
+            <svg class="nav-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown-panel" id="panelNavStudy" hidden>
+            <button type="button" class="nav-dropdown-item nav-dropdown-item--lead" data-nav="subjects">Browse all subjects</button>
+            <div class="nav-dropdown-divider" role="separator"></div>
+            <div class="nav-dropdown-subjects" id="navDropdownSubjects"></div>
+          </div>
+        </div>
+        <div class="nav-dropdown" id="navDropdownCora">
+          <button type="button" class="nav-menu-btn nav-menu-btn--cora" aria-expanded="false" aria-haspopup="true" id="btnNavCora">
+            <span class="cora-ai-brand"><img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-nav"><span class="cora-ai-brand-text"><span class="cora-text">CORA</span><span class="cora-ai-suffix"> AI</span></span></span>
+            <svg class="nav-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown-panel" id="panelNavCora" hidden>
+            <button type="button" class="nav-dropdown-item nav-dropdown-item--lead nav-dropdown-item--cora" data-nav="ai">
+              <span class="cora-ai-brand"><img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-nav"><span class="cora-ai-brand-text"><span class="cora-text">CORA</span><span class="cora-ai-suffix"> AI</span></span></span>
+            </button>
+            <p class="nav-dropdown-hint">Ask about any O-Level subject, or say <em>teach inheritance</em> for full Biology chapter mode.</p>
+          </div>
+        </div>
+        <button type="button" class="nav-dashboard" data-nav="papers">Past papers</button>
+        </nav>
+      </div>
+
+      <div class="header-search" role="search">
+        <input type="search" class="header-search-input" id="navSubjectSearch" placeholder="Search for a subject" autocomplete="off" aria-label="Search for a subject" aria-controls="navSearchResults" aria-expanded="false">
+        <button type="button" class="header-search-btn" id="navSearchBtn" aria-label="Search subjects">
+          <svg class="cora-gradient-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M20 20l-4-4" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <ul class="header-search-results" id="navSearchResults" role="listbox" hidden></ul>
+      </div>
+
+      <div class="header-end">
+        <button type="button" class="nav-dashboard" data-nav="profile">Profile</button>
+        <button type="button" class="btn-settings" id="btnSettings" aria-label="Settings" title="Settings">
+          <svg class="btn-settings-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        </button>
+        <button type="button" class="btn-menu" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav" hidden>
+      <div class="mobile-search-wrap">
+        <input type="search" class="header-search-input" id="navSubjectSearchMobile" placeholder="Search for a subject" autocomplete="off" aria-label="Search for a subject" aria-controls="navSearchResultsMobile" aria-expanded="false">
+        <ul class="header-search-results" id="navSearchResultsMobile" role="listbox" hidden></ul>
+      </div>
+      <button type="button" class="nav-link" data-nav="home">Home</button>
+      <button type="button" class="nav-link" data-nav="subjects">All subjects</button>
+      <button type="button" class="nav-link" data-nav="papers">Past papers</button>
+      <button type="button" class="nav-link nav-link-cora-ai" data-nav="ai"><span class="cora-ai-brand cora-ai-brand--mobile"><img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-mobile"><span class="cora-ai-brand-text"><span class="cora-text">CORA</span><span class="cora-ai-suffix"> AI</span></span></span></button>
+      <button type="button" class="nav-link" data-nav="profile">Profile</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="view view-active" id="view-home" data-view="home">
+      <div class="hero">
+        <div class="hero-badge">8 Cambridge O-Level subjects</div>
+        <h1 class="hero-title">Your study buddy for <span class="gradient-text">exam success</span></h1>
+        <p class="hero-desc"><strong>8 Cambridge O-Level subjects</strong> on one platform — Biology, Chemistry, Physics, Mathematics, English, Pakistan Studies, Islamiat, and Global Perspectives. Notes, flashcards, MCQs, and theory for every syllabus; Biology has the deepest chapter hub.</p>
+        <div class="hero-cta">
+          <button type="button" class="btn btn-primary" data-nav="subjects">Browse subjects</button>
+          <button type="button" class="btn btn-secondary" data-nav="ai">Ask <span class="cora-text">CORA</span></button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong id="statNotes">—</strong><span>Topic notes</span></div>
+          <div class="stat"><strong id="statCards">—</strong><span>Flashcards</span></div>
+          <div class="stat"><strong id="statMcq">—</strong><span>MCQs</span></div>
+          <div class="stat"><strong id="statTheory">—</strong><span>Theory questions</span></div>
+          <div class="stat"><strong id="statSubjects">8</strong><span>O-Level subjects</span></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">Choose your subject</h2>
+        <p class="section-sub">Eight Cambridge syllabi — open any subject card below.</p>
+        <div class="subject-grid" id="homeSubjectGrid"></div>
+      </div>
+
+      <div class="section features">
+        <h2 class="section-title">Everything you need to revise</h2>
+        <div class="feature-grid">
+          <button type="button" class="feature-card" data-feature-nav="subjects" data-feature-tab="notes">
+            <div class="feature-icon">📝</div>
+            <h3>Concise notes</h3>
+            <p>Topic summaries aligned to your syllabus — quick revision before class tests and finals.</p>
+          </button>
+          <button type="button" class="feature-card" data-feature-nav="subjects" data-feature-tab="flashcards">
+            <div class="feature-icon">🃏</div>
+            <h3>Flashcards</h3>
+            <p>Flip cards to drill definitions, formulas and facts. Mark cards you know.</p>
+          </button>
+          <button type="button" class="feature-card" data-feature-nav="subjects" data-feature-tab="mcq">
+            <div class="feature-icon">✅</div>
+            <h3>MCQ practice</h3>
+            <p>Multiple choice with instant feedback and explanations — like past paper Paper 1 style.</p>
+          </button>
+          <button type="button" class="feature-card" data-feature-nav="subjects" data-feature-tab="theory">
+            <div class="feature-icon">📋</div>
+            <h3>Theory questions</h3>
+            <p>Structured questions with mark schemes and bullet-point answers to self-check.</p>
+          </button>
+          <button type="button" class="feature-card" data-feature-nav="ai">
+            <div class="feature-icon feature-icon-cora"><img src="assets/cora-logo.png?v=5" alt="CORA" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-feature"></div>
+            <h3><span class="cora-text">CORA</span> study bot</h3>
+            <p>Chat for revision tips, exam help, and explanations pulled from CADO notes — built into this site.</p>
+          </button>
+          <button type="button" class="feature-card" data-feature-nav="profile">
+            <div class="feature-icon">👤</div>
+            <h3>Your profile</h3>
+            <p>Track progress across all subjects — full chapter stats for Biology, plus quiz scores on this device.</p>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBJECTS LIST -->
+    <section class="view" id="view-subjects" data-view="subjects">
+      <div class="page-header page-header-subjects">
+        <h1>All subjects</h1>
+        <p class="subjects-lead">Each card opens one Cambridge O-Level syllabus. Study with notes, flashcards, and MCQs — your progress is saved on this device.</p>
+        <div class="keyword-row keyword-row--platform" id="platformKeywords"></div>
+        <p class="subjects-lead subjects-lead-secondary">Biology, Chemistry, and Physics have full chapter hubs. Maths, English, Pakistan Studies, Islamiat, and Global Perspectives are next.</p>
+        <div class="keyword-row keyword-row--biology" id="biologyKeywords"></div>
+        <div class="syllabus-code-pills" id="subjectsCodePills"></div>
+        <p class="subjects-pending-hint hidden" id="subjectsPendingHint" role="status"></p>
+      </div>
+      <div class="subject-grid subject-grid-full" id="subjectsGrid"></div>
+    </section>
+
+    <!-- SUBJECT DETAIL -->
+    <section class="view" id="view-subject" data-view="subject">
+      <div class="subject-header" id="subjectHeader">
+        <button type="button" class="btn-back" id="btnBackSubject" aria-label="Back to subjects">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <div class="subject-hub-banner hidden" id="subjectHubBanner">
+          <p>Full chapter hub available for this subject. Other syllabi use topic tabs while more chapter hubs are added.</p>
+          <button type="button" class="btn btn-primary btn-sm" id="btnOpenSubjectHub">Open chapter hub</button>
+        </div>
+        <div class="subject-header-info">
+          <span class="subject-header-icon" id="subjectIcon"></span>
+          <div>
+            <h1 id="subjectTitle">Subject</h1>
+            <p class="subject-code" id="subjectCode">Syllabus</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" id="subjectTabs">
+        <button type="button" class="tab active" role="tab" data-tab="notes" aria-selected="true">Notes</button>
+        <button type="button" class="tab" role="tab" data-tab="flashcards">Flashcards</button>
+        <button type="button" class="tab" role="tab" data-tab="mcq">MCQs</button>
+        <button type="button" class="tab" role="tab" data-tab="theory">Theory</button>
+        <button type="button" class="tab tab--cora" role="tab" data-tab="ai"><img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-tab"><span class="cora-text">CORA</span></button>
+      </div>
+
+      <div class="tab-panels">
+        <div class="tab-panel active" id="panel-notes" role="tabpanel">
+          <div class="notes-list" id="notesList"></div>
+        </div>
+        <div class="tab-panel" id="panel-flashcards" role="tabpanel" hidden>
+          <div class="flashcard-toolbar">
+            <span class="flash-progress" id="flashProgress">Card 1 of 6</span>
+            <button type="button" class="btn btn-sm" id="shuffleCards">Shuffle</button>
+          </div>
+          <div class="flashcard-stage" id="flashcardStage">
+            <button type="button" class="flashcard" id="flashcard" aria-label="Flip card">
+              <div class="flashcard-inner">
+                <div class="flashcard-face flashcard-front">
+                  <span class="flash-label">Question</span>
+                  <p id="flashQuestion">Loading…</p>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                  <span class="flash-label">Answer</span>
+                  <p id="flashAnswer">Loading…</p>
+                </div>
+              </div>
+            </button>
+            <p class="flash-hint">Click card to flip</p>
+          </div>
+          <div class="flashcard-nav">
+            <button type="button" class="btn btn-secondary" id="prevCard">Previous</button>
+            <button type="button" class="btn btn-primary" id="knowCard">I know this ✓</button>
+            <button type="button" class="btn btn-secondary" id="nextCard">Next</button>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-mcq" role="tabpanel" hidden>
+          <div class="quiz-card" id="mcqQuiz">
+            <div class="quiz-meta" id="mcqMeta">Question 1 of 5</div>
+            <h3 class="quiz-question" id="mcqQuestion"></h3>
+            <div class="quiz-options" id="mcqOptions"></div>
+            <div class="quiz-feedback hidden" id="mcqFeedback"></div>
+            <div class="quiz-actions">
+              <button type="button" class="btn btn-primary hidden" id="mcqNext">Next question</button>
+              <button type="button" class="btn btn-secondary" id="mcqRestart">Restart quiz</button>
+            </div>
+            <div class="quiz-score hidden" id="mcqScore"></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-theory" role="tabpanel" hidden>
+          <div class="theory-list" id="theoryList"></div>
+        </div>
+        <div class="tab-panel" id="panel-ai-subject" role="tabpanel" hidden>
+          <div class="ai-embed">
+            <p class="ai-embed-hint"><span class="cora-text">CORA</span> is your study bot for <strong id="aiSubjectName">this subject</strong> — revision tips and help from CADO notes.</p>
+            <div class="chat-messages chat-messages-compact" id="subjectChatMessages"></div>
+            <form class="chat-form" id="subjectChatForm">
+              <input type="text" class="chat-input" id="subjectChatInput" placeholder="Message CORA…" autocomplete="off">
+              <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBJECT CHAPTER HUBS -->
+    <section class="view" id="view-biology" data-view="biology">
+      <div id="biologyHubRoot"></div>
+    </section>
+    <section class="view" id="view-chemistry" data-view="chemistry">
+      <div id="chemistryHubRoot"></div>
+    </section>
+    <section class="view" id="view-physics" data-view="physics">
+      <div id="physicsHubRoot"></div>
+    </section>
+
+    <!-- PAST PAPERS -->
+    <section class="view" id="view-papers" data-view="papers">
+      <div class="page-header">
+        <h1>Past papers</h1>
+        <p>Exam-style mock papers — Biology, Chemistry, and Physics available now. More subjects coming.</p>
+      </div>
+      <div id="pastPaperRoot"></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view" id="view-profile" data-view="profile">
+      <div class="page-header">
+        <h1>Learning hub</h1>
+        <p>Your revision tracker, subject mastery, and exam readiness — all in one place</p>
+      </div>
+      <div class="profile-page" id="profileRoot"></div>
+    </section>
+
+    <!-- CORA AI — simple chat-first tutor -->
+    <section class="view" id="view-ai" data-view="ai">
+      <div class="cora-simple" id="coraV2Root">
+        <header class="cora-simple-bar">
+          <div class="cora-simple-brand">
+            <img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-header">
+            <span class="cora-text">CORA</span>
+            <span class="cora-simple-status" id="coraStatusBadge">Online</span>
+          </div>
+          <div class="cora-simple-controls">
+            <label class="cora-simple-label">
+              <span>Subject</span>
+              <select id="coraSubjectSelect" class="select cora-simple-select">
+                <option value="">All subjects</option>
+              </select>
+            </label>
+            <label class="cora-simple-label">
+              <span>Style</span>
+              <select id="coraModeSelect" class="select cora-simple-select">
+                <option value="teacher">Teacher — explains step by step</option>
+                <option value="exam">Exam — short mark-scheme answers</option>
+                <option value="hint">Hint — guides without full answer</option>
+                <option value="quiz">Quiz — tests you</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-sm btn-secondary" id="btnCoraTools" aria-expanded="false">Tools</button>
+            <button type="button" class="btn btn-sm btn-secondary" id="btnCoraNewChat">New chat</button>
+          </div>
+          <span class="cora-exam-timer hidden" id="coraExamTimer" aria-live="polite"></span>
+          <button type="button" class="btn btn-sm btn-secondary hidden" id="btnCoraEndExam">End exam</button>
+        </header>
+
+        <div class="chat-messages cora-simple-messages" id="chatMessages"></div>
+
+        <form class="cora-simple-form" id="chatForm">
+          <input type="text" class="cora-simple-input" id="chatInput" placeholder="Ask a question… e.g. Explain osmosis" autocomplete="off">
+          <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+
+        <!-- Hidden compat hooks -->
+        <div id="coraSubjectList" class="hidden" aria-hidden="true"></div>
+        <select id="aiSubjectSelect" class="hidden" aria-hidden="true" tabindex="-1"><option value="">General</option></select>
+        <span id="coraModeBadge" class="hidden" aria-hidden="true"></span>
+
+        <aside class="cora-tools-sheet hidden" id="coraToolsSheet" aria-label="CORA tools">
+          <div class="cora-tools-sheet-inner">
+            <div class="cora-tools-sheet-head">
+              <h2>Tools</h2>
+              <button type="button" class="cora-tools-close" id="btnCoraToolsClose" aria-label="Close">×</button>
+            </div>
+            <div class="cora-tools-group">
+              <h3>Grade your answer</h3>
+              <p class="cora-tools-hint">Paste a question and your answer — CORA scores it.</p>
+              <input type="text" id="coraMarkQuestion" placeholder="Question (e.g. Explain osmosis)">
+              <textarea id="coraMarkAnswer" rows="3" placeholder="Your answer…"></textarea>
+              <button type="button" class="btn btn-sm btn-primary" id="btnCoraMarkSubmit">Grade answer</button>
+            </div>
+            <div class="cora-tools-group">
+              <h3>Quick actions</h3>
+              <button type="button" class="btn btn-sm btn-secondary cora-tools-action" id="btnCoraFlashGen">🃏 Flashcards from last answer</button>
+              <button type="button" class="btn btn-sm btn-secondary cora-tools-action" id="btnCoraExamSession">⏱️ 45-min exam session</button>
+              <button type="button" class="btn btn-sm btn-secondary cora-tools-action" id="btnCoraClearGlobal">Clear this chat</button>
+              <a href="#" class="cora-tools-link" data-nav="profile">View progress in Learning hub →</a>
+            </div>
+            <div class="cora-tools-group">
+              <h3>Chat history</h3>
+              <div id="coraHistoryList"></div>
+            </div>
+            <div id="coraMarkPanel" class="hidden" aria-hidden="true"></div>
+            <div id="coraProgressPanel" class="hidden" aria-hidden="true"></div>
+            <div id="coraMistakeLog" class="hidden" aria-hidden="true"></div>
+            <div id="coraWeakTopics" class="hidden" aria-hidden="true"></div>
+          </div>
+          <div class="cora-tools-backdrop" id="coraToolsBackdrop"></div>
+        </aside>
+      </div>
+
+      <div class="settings-modal hidden cora-flash-modal" id="coraFlashModal" role="dialog" aria-modal="true">
+        <div class="settings-backdrop" id="coraFlashBackdrop"></div>
+        <div class="settings-panel">
+          <h2>Flashcards from CORA</h2>
+          <div id="coraFlashList"></div>
+          <button type="button" class="btn btn-secondary btn-sm" id="coraFlashClose">Close</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="settings-modal hidden" id="chapterPickerModal" role="dialog" aria-labelledby="chapterPickerTitle" aria-modal="true">
+    <div class="settings-backdrop" id="chapterPickerBackdrop"></div>
+    <div class="settings-panel chapter-picker-panel">
+      <h2 id="chapterPickerTitle">Choose a chapter</h2>
+      <p class="chapter-picker-sub" id="chapterPickerSub"></p>
+      <ul class="chapter-picker-list" id="chapterPickerList" role="listbox"></ul>
+      <button type="button" class="btn btn-secondary btn-sm chapter-picker-cancel" id="chapterPickerCancel">Cancel</button>
+    </div>
+  </div>
+
+  <div class="settings-modal hidden" id="settingsModal" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
+    <div class="settings-backdrop" id="settingsBackdrop"></div>
+    <div class="settings-panel settings-panel-wide">
+      <h2 id="settingsTitle">Settings</h2>
+      <h3 class="settings-section-title">UI</h3>
+      <label class="settings-row" for="settingsTheme"><span>Theme</span>
+        <select id="settingsTheme" class="select">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <label class="settings-row" for="settingsFontSize"><span>Font size</span>
+        <select id="settingsFontSize" class="select">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </label>
+      <label class="settings-row" for="settingsCoraStyle"><span><span class="cora-text">CORA</span> response style</span>
+        <select id="settingsCoraStyle" class="select">
+          <option value="fast">Fast</option>
+          <option value="balanced">Balanced</option>
+          <option value="detailed">Detailed</option>
+        </select>
+      </label>
+      <h3 class="settings-section-title">Learning</h3>
+      <label class="settings-row" for="settingsMcqDifficulty"><span>MCQ difficulty</span>
+        <select id="settingsMcqDifficulty" class="select">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label class="settings-row"><span>Exam mode</span>
+        <input type="checkbox" id="settingsExamMode">
+      </label>
+      <label class="settings-row" for="settingsFlashMode"><span>Flashcard review</span>
+        <select id="settingsFlashMode" class="select">
+          <option value="standard">Standard</option>
+          <option value="spaced">Spaced review</option>
+        </select>
+      </label>
+      <button type="button" class="btn btn-primary" id="settingsClose">Done</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-footer-wrap">
+      <div class="site-footer-main">
+        <div class="site-footer-brand">
+          <a href="#" class="site-footer-logo-link" data-nav="home" aria-label="CADO Home">
+            <img src="assets/Cado-logo.png?v=4" alt="CADO" class="site-footer-logo" decoding="async">
+          </a>
+          <p class="site-footer-tagline">Cambridge O-Level study — notes, practice, and your AI tutor
+            <span class="cora-ai-brand cora-ai-brand--footer-inline">
+              <img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-footer">
+              <span class="cora-ai-brand-text"><span class="cora-text">CORA</span></span>
+            </span>.
+          </p>
+        </div>
+        <nav class="site-footer-nav" aria-label="Footer">
+          <div class="site-footer-col">
+            <h3>Study</h3>
+            <button type="button" class="site-footer-link" data-nav="subjects">Subjects</button>
+            <button type="button" class="site-footer-link" data-nav="papers">Past papers</button>
+            <button type="button" class="site-footer-link" data-nav="profile">Learning hub</button>
+          </div>
+          <div class="site-footer-col">
+            <h3>AI tutor</h3>
+            <button type="button" class="site-footer-link site-footer-link--cora" data-nav="ai">
+              <span class="cora-ai-brand cora-ai-brand--footer">
+                <img src="assets/cora-logo.png?v=5" alt="" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-footer">
+                <span class="cora-ai-brand-text"><span class="cora-text">CORA</span></span>
+              </span>
+            </button>
+          </div>
+        </nav>
+      </div>
+      <div class="site-footer-bottom">
+        <p class="site-footer-copy">&copy; <span id="footerYear">2026</span> CADO. Built for O-Level students.</p>
+        <p class="site-footer-note">Always verify content with your teacher and official mark schemes.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data/content.js"></script>
+  <script src="data/biology-5090-core.js"></script>
+  <script src="data/biology-5090-notes.js"></script>
+  <script src="data/biology-5090-cells-chapter.js"></script>
+  <script src="data/biology-5090-classification-chapter.js"></script>
+  <script src="data/biology-5090-movement-chapter.js"></script>
+  <script src="data/biology-5090-biological-molecules-chapter.js"></script>
+  <script src="data/biology-5090-enzymes-chapter.js"></script>
+  <script src="data/biology-5090-plant-nutrition-chapter.js"></script>
+  <script src="data/biology-5090-transport-plants-chapter.js"></script>
+  <script src="data/biology-5090-human-nutrition-chapter.js"></script>
+  <script src="data/biology-5090-gas-exchange-chapter.js"></script>
+  <script src="data/biology-5090-respiration-chapter.js"></script>
+  <script src="data/biology-5090-transport-humans-chapter.js"></script>
+  <script src="data/biology-5090-disease-immunity-chapter.js"></script>
+  <script src="data/biology-5090-excretion-chapter.js"></script>
+  <script src="data/biology-5090-coordination-control-chapter.js"></script>
+  <script src="data/biology-5090-coordination-plants-chapter.js"></script>
+  <script src="data/biology-5090-development-chapter.js"></script>
+  <script src="data/biology-5090-inheritance-chapter.js"></script>
+  <script src="data/biology-5090-biotechnology-chapter.js"></script>
+  <script src="data/biology-5090-ecology-chapter.js"></script>
+  <script src="data/biology-5090-quiz.js"></script>
+  <script src="data/biology-5090-papers.js"></script>
+  <script src="data/chemistry-5070-core.js"></script>
+  <script src="data/chemistry-5070-states-of-matter-chapter.js"></script>
+  <script src="data/chemistry-5070-atoms-elements-compounds-chapter.js"></script>
+  <script src="data/chemistry-5070-stoichiometry-chapter.js"></script>
+  <script src="data/chemistry-5070-electrochemistry-chapter.js"></script>
+  <script src="data/chemistry-5070-chemical-energetics-chapter.js"></script>
+  <script src="data/chemistry-5070-chemical-reactions-chapter.js"></script>
+  <script src="data/chemistry-5070-acids-bases-salts-chapter.js"></script>
+  <script src="data/chemistry-5070-periodic-table-chapter.js"></script>
+  <script src="data/chemistry-5070-metals-chapter.js"></script>
+  <script src="data/chemistry-5070-chemistry-environment-chapter.js"></script>
+  <script src="data/chemistry-5070-organic-chemistry-chapter.js"></script>
+  <script src="data/chemistry-5070-experimental-techniques-chapter.js"></script>
+  <script src="data/physics-5054-core.js"></script>
+  <script src="js/subject-progress.js"></script>
+  <script src="js/biology-progress.js"></script>
+  <script src="js/cadetos-settings.js"></script>
+  <script src="js/cadetos-profile.js"></script>
+  <script src="js/profile-engine.js"></script>
+  <script src="js/profile-page.js"></script>
+  <link rel="stylesheet" href="css/cora-v2.css">
+  <script src="js/cora-prompt.js"></script>
+  <script src="js/cora-engine.js"></script>
+  <script src="js/cora-store.js"></script>
+  <script src="js/cora-coach.js"></script>
+  <script src="js/cora-ai.js"></script>
+  <script src="js/cora-ui.js"></script>
+  <script src="js/past-paper-generator.js"></script>
+  <script src="js/biology-ai.js"></script>
+  <script src="js/subject-hub.js"></script>
+  <script src="js/biology-hub.js"></script>
+  <script src="js/chemistry-gamification.js"></script>
+  <script src="js/chemistry-games.js"></script>
+  <script src="js/chemistry-lms.js"></script>
+  <script src="js/chemistry-hub.js"></script>
+  <script src="js/physics-hub.js"></script>
+  <script src="js/subject-hubs-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
