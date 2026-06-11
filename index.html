@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="CADO — O-Level study buddy with CORA study bot. Notes, flashcards, MCQs, theory and revision help for Cambridge syllabi.">
-  <title>CADO — O-Level Study Buddy</title>
+  <meta name="description" content="CADO Buddy — premium O-Level study platform with CORA AI. Notes, flashcards, MCQs, XP, streaks, and revision help for Cambridge syllabi.">
+  <title>CADO Buddy — O-Level Study Platform</title>
   <link rel="icon" href="assets/Cado-logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/cado-buddy.css">
   <link rel="stylesheet" href="css/chemistry-lms.css">
   <link rel="stylesheet" href="css/profile-hub.css">
 </head>
@@ -71,6 +72,13 @@
       </div>
 
       <div class="header-end">
+        <div class="buddy-hud" id="buddyHud" aria-label="Your progress">
+          <button type="button" class="buddy-hud-toggle" id="buddyHudToggle" aria-expanded="false" aria-controls="buddyHudPanel">
+            <span class="buddy-hud-stat" title="Study streak"><span class="buddy-hud-icon">🔥</span><span id="buddyStreak">0</span></span>
+            <span class="buddy-hud-stat" title="Experience points"><span class="buddy-hud-icon">⭐</span><span id="buddyXp">0</span></span>
+            <span class="buddy-hud-name" id="buddyUserName">Student</span>
+          </button>
+        </div>
         <button type="button" class="nav-dashboard" data-nav="profile">Profile</button>
         <button type="button" class="btn-settings" id="btnSettings" aria-label="Settings" title="Settings">
           <svg class="btn-settings-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
@@ -98,7 +106,7 @@
     <section class="view view-active" id="view-home" data-view="home">
       <div class="hero">
         <div class="hero-badge">8 Cambridge O-Level subjects</div>
-        <h1 class="hero-title">Your study buddy for <span class="gradient-text">exam success</span></h1>
+        <h1 class="hero-title">CADO Buddy — your path to <span class="gradient-text">exam success</span></h1>
         <p class="hero-desc"><strong>8 Cambridge O-Level subjects</strong> on one platform — Biology, Chemistry, Physics, Mathematics, English, Pakistan Studies, Islamiat, and Global Perspectives. Notes, flashcards, MCQs, and theory for every syllabus; Biology has the deepest chapter hub.</p>
         <div class="hero-cta">
           <button type="button" class="btn btn-primary" data-nav="subjects">Browse subjects</button>
@@ -384,6 +392,34 @@
     </div>
   </div>
 
+  <div class="settings-modal hidden" id="buddyWelcomeModal" role="dialog" aria-labelledby="buddyWelcomeTitle" aria-modal="true">
+    <div class="settings-backdrop" id="buddyWelcomeBackdrop"></div>
+    <div class="settings-panel buddy-welcome-panel">
+      <h2 id="buddyWelcomeTitle">Welcome to CADO Buddy</h2>
+      <p>What should CORA call you? We'll remember your name and last topic on this device.</p>
+      <form class="buddy-welcome-form" id="buddyWelcomeForm">
+        <input type="text" class="buddy-welcome-input" id="buddyNameInput" placeholder="Your first name" maxlength="32" autocomplete="nickname">
+        <div class="buddy-welcome-actions">
+          <button type="submit" class="btn btn-primary">Let's go</button>
+          <button type="button" class="btn btn-secondary" id="buddyWelcomeSkip">Skip for now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <aside class="buddy-hud-panel" id="buddyHudPanel" aria-label="Progress details">
+    <div class="buddy-hud-panel-head">
+      <h3>Your progress</h3>
+      <button type="button" class="buddy-hud-panel-close" id="buddyHudPanelClose" aria-label="Close">×</button>
+    </div>
+    <div class="buddy-hud-stats-row">
+      <div class="buddy-hud-stat-card"><strong id="buddyXpPanel">0</strong><span>XP</span></div>
+      <div class="buddy-hud-stat-card"><strong id="buddyStreakPanel">0</strong><span>Day streak</span></div>
+    </div>
+    <div class="buddy-badge-strip" id="buddyBadgeStrip"></div>
+    <div class="buddy-badge-list" id="buddyBadgeList"></div>
+  </aside>
+
   <div class="settings-modal hidden" id="settingsModal" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
     <div class="settings-backdrop" id="settingsBackdrop"></div>
     <div class="settings-panel settings-panel-wide">
@@ -409,6 +445,10 @@
           <option value="balanced">Balanced</option>
           <option value="detailed">Detailed</option>
         </select>
+      </label>
+      <h3 class="settings-section-title">Profile</h3>
+      <label class="settings-row" for="settingsDisplayName"><span>Your name</span>
+        <input type="text" id="settingsDisplayName" class="select" maxlength="32" placeholder="For CORA greetings" autocomplete="nickname">
       </label>
       <h3 class="settings-section-title">Learning</h3>
       <label class="settings-row" for="settingsMcqDifficulty"><span>MCQ difficulty</span>
@@ -508,6 +548,8 @@
   <script src="data/chemistry-5070-organic-chemistry-chapter.js"></script>
   <script src="data/chemistry-5070-experimental-techniques-chapter.js"></script>
   <script src="data/physics-5054-core.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
   <script src="js/subject-progress.js"></script>
   <script src="js/biology-progress.js"></script>
   <script src="js/cadetos-settings.js"></script>
@@ -516,6 +558,7 @@
   <script src="js/profile-page.js"></script>
   <link rel="stylesheet" href="css/cora-v2.css">
   <script src="js/cora-prompt.js"></script>
+  <script src="js/coraBrain.js"></script>
   <script src="js/cora-engine.js"></script>
   <script src="js/cora-store.js"></script>
   <script src="js/cora-coach.js"></script>

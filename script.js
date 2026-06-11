@@ -89,6 +89,7 @@
       );
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof CadoUI !== "undefined" && CadoUI.onViewChange) CadoUI.onViewChange(name);
     if (name === "ai" && typeof CoraUI !== "undefined" && CoraUI.refreshTools) CoraUI.refreshTools();
     $("#mobileNav")?.setAttribute("hidden", "");
     $("#menuToggle")?.setAttribute("aria-expanded", "false");
@@ -267,6 +268,8 @@
     try {
       localStorage.setItem("cado_last_subject", id);
     } catch { /* ignore */ }
+
+    if (typeof CadoStorage !== "undefined") CadoStorage.markSubjectOpened(id);
 
     if (typeof cadoIsHubSubject === "function" && cadoIsHubSubject(id)) {
       if (typeof CadetosProfile !== "undefined") CadetosProfile.markSubjectOpened(id);
@@ -500,6 +503,10 @@
       progress.flashKnown[currentSubject].push(origIdx);
     }
     saveProgress(progress);
+    if (typeof CadoStorage !== "undefined") {
+      CadoStorage.incrementStat("flashcardsKnown");
+      CadoStorage.addXp(CadoStorage.XP_REWARDS.flashcard_known, "flashcard_known");
+    }
     flashDeck.splice(flashIndex, 1);
     if (flashIndex >= flashDeck.length) flashIndex = 0;
     if (flashDeck.length === 0) {
@@ -570,6 +577,10 @@
 
     $("#mcqNext").classList.remove("hidden");
     saveMcqProgress(subjectId);
+    if (correct && typeof CadoStorage !== "undefined") {
+      CadoStorage.incrementStat("mcqCorrect");
+      CadoStorage.addXp(CadoStorage.XP_REWARDS.mcq_correct, "mcq_correct");
+    }
   }
 
   function saveMcqProgress(id) {
@@ -594,6 +605,9 @@
     const pct = Math.round((mcqScore / total) * 100);
     scoreEl.textContent =
       pct >= 80 ? "Excellent work! Keep revising past papers." : pct >= 50 ? "Good effort — review the explanations and try again." : "Keep practising — use Notes and Flashcards first.";
+    if (typeof CadoStorage !== "undefined") {
+      CadoStorage.addXp(CadoStorage.XP_REWARDS.quiz_complete, "quiz_complete");
+    }
   }
 
   function nextMcq() {
@@ -966,6 +980,8 @@
     set("#settingsMcqDifficulty", s.mcqDifficulty || "medium");
     set("#settingsFlashMode", s.flashcardReviewMode || "standard");
     setChk("#settingsExamMode", s.examMode);
+    const nameEl = $("#settingsDisplayName");
+    if (nameEl && typeof CadoStorage !== "undefined") nameEl.value = CadoStorage.getUserName() || "";
   }
 
   function toggleTheme() {
@@ -1004,6 +1020,13 @@
     });
     $("#settingsFlashMode")?.addEventListener("change", (e) => {
       if (typeof CadetosSettings !== "undefined") CadetosSettings.save({ flashcardReviewMode: e.target.value });
+    });
+    $("#settingsDisplayName")?.addEventListener("change", (e) => {
+      if (typeof CadoStorage !== "undefined") {
+        CadoStorage.setUserName(e.target.value);
+        if (typeof CadoUI !== "undefined") CadoUI.renderHud();
+        if (typeof CoraUI !== "undefined" && CoraUI.refreshWelcome) CoraUI.refreshWelcome();
+      }
     });
   }
 
@@ -1346,6 +1369,7 @@
     updateStats();
     initAiSelect();
     initCoraSettings();
+    if (typeof CadoUI !== "undefined") CadoUI.init();
     if (typeof CORA !== "undefined") CORA.init();
     if (typeof CoraUI !== "undefined") CoraUI.init();
     bindEvents();

@@ -1,0 +1,420 @@
+/* CADO Buddy — premium polish, gamification, motion */
+
+:root {
+  --buddy-radius: 14px;
+  --buddy-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --buddy-surface: rgba(255, 255, 255, 0.92);
+  --buddy-glow: rgba(79, 70, 229, 0.15);
+}
+
+[data-theme="dark"] {
+  --buddy-surface: rgba(20, 26, 46, 0.95);
+  --buddy-glow: rgba(129, 140, 248, 0.18);
+}
+
+/* Page transitions */
+.view.view-entering {
+  animation: buddyViewIn 0.42s var(--buddy-ease) both;
+}
+
+@keyframes buddyViewIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Button press feedback */
+.btn-pressed {
+  transform: scale(0.97) !important;
+  transition: transform 0.12s var(--buddy-ease) !important;
+}
+
+.btn,
+.subject-card,
+.feature-card,
+.cora-chip {
+  transition: transform 0.2s var(--buddy-ease), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover:not(:disabled),
+.subject-card:hover,
+.feature-card:hover,
+.cora-chip:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+}
+
+.subject-card:hover,
+.feature-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(79, 70, 229, 0.25);
+}
+
+/* Gamification HUD */
+.buddy-hud {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.buddy-hud-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.buddy-hud-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.buddy-hud-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.buddy-hud-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.buddy-hud-name {
+  max-width: 5.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+.buddy-hud-name--guest {
+  opacity: 0.65;
+  font-style: italic;
+}
+
+.buddy-hud-panel {
+  position: fixed;
+  top: calc(var(--header-h) + 0.5rem);
+  right: 1rem;
+  width: min(320px, calc(100vw - 2rem));
+  padding: 1rem 1.1rem;
+  border-radius: var(--buddy-radius);
+  background: var(--buddy-surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 0.25s var(--buddy-ease), transform 0.25s var(--buddy-ease), visibility 0.25s;
+  backdrop-filter: blur(12px);
+}
+
+.buddy-hud-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.buddy-hud-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.buddy-hud-panel-head h3 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.buddy-hud-panel-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.buddy-hud-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.buddy-hud-stat-card {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.buddy-hud-stat-card strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.buddy-hud-stat-card span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.buddy-badge-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  min-height: 1.5rem;
+}
+
+.buddy-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  font-size: 0.95rem;
+  cursor: default;
+  transition: transform 0.2s var(--buddy-ease);
+}
+
+.buddy-badge:hover {
+  transform: scale(1.12);
+}
+
+.buddy-badge-empty {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.buddy-badge-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.45rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.buddy-badge-card {
+  padding: 0.5rem 0.55rem;
+  border-radius: 10px;
+  border: 1px dashed var(--border);
+  opacity: 0.55;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.buddy-badge-card.is-earned {
+  opacity: 1;
+  border-style: solid;
+  background: var(--primary-soft);
+}
+
+.buddy-badge-card-icon {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 0.15rem;
+}
+
+.buddy-badge-card strong {
+  display: block;
+  font-size: 0.75rem;
+}
+
+.buddy-badge-card small {
+  color: var(--text-muted);
+}
+
+/* XP & badge toasts */
+.buddy-xp-toast,
+.buddy-badge-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 300;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--buddy-ease), transform 0.3s var(--buddy-ease);
+}
+
+.buddy-xp-toast.is-visible,
+.buddy-badge-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.buddy-badge-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-radius: var(--buddy-radius);
+  padding: 0.75rem 1rem;
+}
+
+.buddy-badge-toast-icon {
+  font-size: 1.5rem;
+}
+
+/* Welcome modal */
+.buddy-welcome-panel {
+  max-width: 400px;
+  text-align: center;
+}
+
+.buddy-welcome-panel h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.buddy-welcome-panel p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.buddy-welcome-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.buddy-welcome-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+  text-align: center;
+}
+
+.buddy-welcome-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.buddy-welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Chat message entrance */
+.message-enter {
+  animation: buddyMsgIn 0.35s var(--buddy-ease) both;
+}
+
+@keyframes buddyMsgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CORA thinking — animated dots label */
+.cora-thinking-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.cora-thinking-dots::after {
+  content: "";
+  animation: buddyDots 1.4s steps(4, end) infinite;
+}
+
+@keyframes buddyDots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+}
+
+/* Hero polish */
+.hero-badge {
+  animation: buddyPulse 3s ease-in-out infinite;
+}
+
+@keyframes buddyPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--buddy-glow); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+
+.hero-cta .btn {
+  min-width: 10rem;
+}
+
+/* CORA welcome personalized */
+.cora-welcome-greeting {
+  font-size: 1.05rem;
+  margin-bottom: 0.65rem;
+  color: var(--text);
+}
+
+.cora-welcome-memory {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  margin-bottom: 0.85rem;
+}
+
+/* Mobile HUD */
+@media (max-width: 768px) {
+  .buddy-hud-name {
+    display: none;
+  }
+
+  .buddy-hud-toggle {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .buddy-hud-panel {
+    right: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .buddy-hud-stat span:not(.buddy-hud-icon) {
+    font-size: 0.72rem;
+  }
+}

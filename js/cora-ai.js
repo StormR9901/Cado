@@ -1,18 +1,18 @@
 /**
- * CORA — CADO exam coach with structured 3-section replies
+ * CORA — CADO exam coach (UI layer; brain in coraBrain.js)
  */
 const CORA = (function () {
   "use strict";
 
-  const histories = { global: [], biology: [], subject: [] };
   const CORA_AVATAR =
     '<img src="assets/cora-logo.png?v=5" alt="CORA" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-avatar">';
   const CORA_GRADIENT = '<span class="cora-text">CORA</span>';
   const CORA_GRADIENT_AI =
     '<span class="cora-ai-brand-text"><span class="cora-text">CORA</span><span class="cora-ai-suffix"> AI</span></span>';
 
-  var liveAI = false;
-  var apiBase = "";
+  function brain() {
+    return typeof CoraBrain !== "undefined" ? CoraBrain : null;
+  }
 
   function formatInlineCora(str) {
     var safe = escapeHtml(str);
@@ -23,129 +23,39 @@ const CORA = (function () {
   }
 
   function loadSettings() {
-    if (typeof CadetosSettings !== "undefined") return CadetosSettings.load();
-    if (typeof BiologySettings !== "undefined") return BiologySettings.load();
-    return { coraTypingMs: 28, coraStyle: "balanced", aiTone: "balanced" };
+    const b = brain();
+    return b ? b.loadSettings() : { coraTypingMs: 28 };
   }
 
   function typingDelay() {
-    const s = loadSettings();
-    if (s.coraTypingMs) return s.coraTypingMs;
-    if (s.coraStyle === "fast") return 16;
-    if (s.coraStyle === "detailed") return 48;
-    return 28;
+    const b = brain();
+    return b ? b.typingDelay() : 28;
   }
 
   function hasLiveAI() {
-    return liveAI;
+    const b = brain();
+    return b ? b.hasLiveAI() : false;
   }
 
   async function detectLiveAI() {
-    try {
-      const base = apiBase || "";
-      const r = await fetch(base + "/api/health", { method: "GET" });
-      if (!r.ok) return false;
-      const j = await r.json();
-      liveAI = !!(j.ok && j.keyConfigured);
-      window.dispatchEvent(new CustomEvent("cora-status-changed"));
-      return liveAI;
-    } catch {
-      liveAI = false;
-      return false;
-    }
+    const b = brain();
+    return b ? b.detectLiveAI() : false;
   }
 
   function statusLabel() {
-    if (liveAI) return '● <span class="cora-text">CORA</span> AI live';
-    return '● <span class="cora-text">CORA</span> coach online';
-  }
-
-  function getHistory(channel) {
-    if (!histories[channel]) histories[channel] = [];
-    return histories[channel];
-  }
-
-  function pushHistory(channel, role, content) {
-    const h = getHistory(channel);
-    h.push({ role: role, content: content });
-    if (h.length > 24) histories[channel] = h.slice(-24);
+    const b = brain();
+    return b ? b.statusLabel() : '● <span class="cora-text">CORA</span> coach online';
   }
 
   function clearHistory(channel) {
-    histories[channel] = [];
-  }
-
-  function localConversational(msg) {
-    if (typeof CoraPrompt !== "undefined" && CoraPrompt.isSmallTalk(msg)) {
-      return CoraPrompt.smallTalkReply(msg);
-    }
-    return null;
-  }
-
-  function studyReply(message, ctx) {
-    if (ctx.mode === "quiz" && typeof CoraCoach !== "undefined") {
-      return CoraCoach.generateQuizQuestion(ctx);
-    }
-    if (typeof CoraEngine !== "undefined") {
-      const engine = CoraEngine.respond(message, ctx);
-      if (engine) return engine;
-    }
-    if (ctx.subjectId === "biology" && typeof BiologyAI !== "undefined") {
-      const study = BiologyAI.respond(message);
-      if (study && study.length > 20) return study;
-    }
-    if (typeof window.cadoGenerateAiReply === "function") {
-      return window.cadoGenerateAiReply(message, ctx.subjectId || null);
-    }
-    return "I'm **CORA**, your exam coach. Ask about any O-Level topic — I'll break it into exam-ready sections.";
-  }
-
-  function enrichContext(ctx) {
-    const next = Object.assign({}, ctx || {});
-    if (typeof CoraStore !== "undefined") {
-      if (!next.toggles) next.toggles = CoraStore.getToggles();
-      if (!next.mode) next.mode = CoraStore.getMode();
-      if (!next.weakTopics) next.weakTopics = CoraStore.getWeakTopics();
-    }
-    return next;
-  }
-
-  async function askLive(message, ctx) {
-    const history = getHistory(ctx.channel || "global").slice(-10).map(function (m) {
-      return { role: m.role, content: m.content };
-    });
-    const fullCtx = enrichContext(ctx);
-    const systemPrompt = typeof CoraPrompt !== "undefined"
-      ? CoraPrompt.build(fullCtx)
-      : (typeof CoraCoach !== "undefined" ? CoraCoach.buildSystemPrompt(fullCtx) : "You are CORA, an O Level exam coach.");
-    const r = await fetch((apiBase || "") + "/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: message, systemPrompt: systemPrompt, history: history })
-    });
-    if (!r.ok) throw new Error("API error");
-    const j = await r.json();
-    return j.reply || "";
+    const b = brain();
+    if (b) b.clearHistory(channel);
   }
 
   async function ask(message, ctx) {
-    ctx = ctx || {};
-    const channel = ctx.channel || "global";
-    const conversational = localConversational(message);
-    if (conversational) {
-      pushHistory(channel, "user", message);
-      pushHistory(channel, "assistant", conversational);
-      return conversational;
-    }
-    let reply;
-    if (liveAI) {
-      try { reply = await askLive(message, ctx); } catch { reply = studyReply(message, ctx); }
-    } else {
-      reply = studyReply(message, ctx);
-    }
-    pushHistory(channel, "user", message);
-    pushHistory(channel, "assistant", reply);
-    return reply;
+    const b = brain();
+    if (b) return b.ask(message, ctx);
+    return "I'm **CORA**, your exam coach.";
   }
 
   function escapeHtml(str) {
@@ -168,7 +78,7 @@ const CORA = (function () {
 
   function appendUserMessage(container, text) {
     const div = document.createElement("div");
-    div.className = "message message-user";
+    div.className = "message message-user message-enter";
     div.innerHTML = '<div class="message-avatar">You</div><div class="message-bubble"><p>' + escapeHtml(text) + "</p></div>";
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
@@ -176,9 +86,10 @@ const CORA = (function () {
 
   function appendThinking(container) {
     const div = document.createElement("div");
-    div.className = "message message-bot message-thinking";
+    div.className = "message message-bot message-thinking message-enter";
     div.innerHTML = '<div class="message-avatar cora-avatar">' + CORA_AVATAR + '</div><div class="message-bubble cora-thinking-bubble">' +
-      '<span class="cora-typing-indicator"><span></span><span></span><span></span></span> ' + CORA_GRADIENT + ' is thinking…</div>';
+      '<span class="cora-typing-indicator"><span></span><span></span><span></span></span> ' +
+      '<span class="cora-thinking-label"><span class="cora-text">CORA</span> is thinking<span class="cora-thinking-dots"></span></span></div>';
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
     return div;
@@ -186,7 +97,7 @@ const CORA = (function () {
 
   function appendBotBubble(container) {
     const div = document.createElement("div");
-    div.className = "message message-bot cora-stream-message";
+    div.className = "message message-bot cora-stream-message message-enter";
     div.innerHTML = '<div class="message-avatar cora-avatar">' + CORA_AVATAR + '</div><div class="message-bubble cora-stream-bubble"></div>';
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
@@ -197,12 +108,28 @@ const CORA = (function () {
     return new Promise(function (resolve) { setTimeout(resolve, ms); });
   }
 
-  async function streamHtml(bubbleEl, html) {
-    bubbleEl.classList.add("is-streaming");
-    bubbleEl.innerHTML = html;
-    bubbleEl.classList.remove("is-streaming");
-    const parent = bubbleEl.closest(".chat-messages, .cora-chat-messages");
+  function scrollParent(bubbleEl) {
+    const parent = bubbleEl.closest(".chat-messages, .cora-chat-messages, .cora-simple-messages");
     if (parent) parent.scrollTop = parent.scrollHeight;
+  }
+
+  async function streamHtml(bubbleEl, html) {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    const plain = temp.textContent || "";
+    const tokens = plain.match(/\S+\s*|\n/g) || [plain];
+    let shown = "";
+    const ms = typingDelay();
+    bubbleEl.classList.add("is-streaming");
+    for (let i = 0; i < tokens.length; i++) {
+      shown += tokens[i];
+      bubbleEl.textContent = shown;
+      scrollParent(bubbleEl);
+      await delay(ms);
+    }
+    bubbleEl.classList.remove("is-streaming");
+    bubbleEl.innerHTML = html;
+    scrollParent(bubbleEl);
   }
 
   async function streamText(bubbleEl, text) {
@@ -214,8 +141,7 @@ const CORA = (function () {
     for (let i = 0; i < tokens.length; i++) {
       shown += tokens[i];
       bubbleEl.innerHTML = formatHtml(shown);
-      const parent = bubbleEl.closest(".chat-messages, .cora-chat-messages");
-      if (parent) parent.scrollTop = parent.scrollHeight;
+      scrollParent(bubbleEl);
       await delay(ms);
     }
     bubbleEl.classList.remove("is-streaming");
@@ -229,7 +155,7 @@ const CORA = (function () {
     }
     appendUserMessage(container, message);
     const thinking = appendThinking(container);
-    await delay(350 + Math.random() * 200);
+    await delay(400 + Math.random() * 250);
     thinking.remove();
     const bot = appendBotBubble(container);
     const bubble = bot.bubble;
@@ -249,7 +175,7 @@ const CORA = (function () {
         await streamText(bubble, reply);
         if (typeof CoraStore !== "undefined") {
           const qType = typeof CoraCoach !== "undefined" ? CoraCoach.detectQuestionType(message) : "general";
-          const structured = typeof CoraCoach !== "undefined" ? CoraCoach.structureResponse(reply, ctx, qType) : null;
+          structured = typeof CoraCoach !== "undefined" ? CoraCoach.structureResponse(reply, ctx, qType) : null;
           CoraStore.appendMessage("assistant", reply, { subjectId: ctx.subjectId, structured: structured });
         }
       }

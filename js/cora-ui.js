@@ -94,14 +94,26 @@ const CoraUI = (function () {
     });
   }
 
-  function renderWelcome() {
-    const box = $("#chatMessages");
-    if (!box) return;
-    box.innerHTML = '<div class="message message-bot cora-welcome-msg">' +
+  function buildWelcomeHtml() {
+    var greeting = "Hi — I'm <span class=\"cora-text\">CORA</span>";
+    var memoryBlock = "";
+    if (typeof CoraBrain !== "undefined") {
+      greeting = CoraBrain.getPersonalizedGreeting().replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    } else if (typeof CadoStorage !== "undefined" && CadoStorage.getUserName()) {
+      greeting = "Hey <strong>" + escapeHtml(CadoStorage.getUserName()) + "</strong> — I'm <span class=\"cora-text\">CORA</span>";
+    }
+    if (typeof CadoStorage !== "undefined") {
+      var mem = CadoStorage.getLastTopic();
+      if (mem.topic) {
+        memoryBlock = '<p class="cora-welcome-memory">📚 Last studied: <strong>' + escapeHtml(mem.topic) + "</strong></p>";
+      }
+    }
+    return '<div class="message message-bot cora-welcome-msg message-enter">' +
       '<div class="message-avatar cora-avatar"><img src="assets/cora-logo.png?v=5" alt="CORA" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-avatar"></div>' +
       '<div class="message-bubble cora-welcome-bubble">' +
       '<div class="cora-welcome-card">' +
-      '<h2 class="cora-welcome-title">Hi — I\'m <span class="cora-text">CORA</span></h2>' +
+      '<h2 class="cora-welcome-title cora-welcome-greeting">' + greeting + "</h2>" +
+      memoryBlock +
       '<p class="cora-welcome-lead">Your exam coach. Ask anything and I\'ll break it into <strong>quick answer</strong>, <strong>explanation</strong>, and <strong>exam bullets</strong>.</p>' +
       '<ol class="cora-welcome-steps">' +
       '<li><span>1</span> Pick your subject above</li>' +
@@ -113,9 +125,21 @@ const CoraUI = (function () {
       '<button type="button" class="cora-chip" data-prompt="What is osmosis?">What is osmosis?</button>' +
       '<button type="button" class="cora-chip" data-prompt="Quiz me on acids and bases">Quiz me</button>' +
       '</div></div></div></div>';
+  }
+
+  function renderWelcome() {
+    const box = $("#chatMessages");
+    if (!box) return;
+    box.innerHTML = buildWelcomeHtml();
     box.querySelectorAll(".cora-chip").forEach(function (chip) {
       chip.addEventListener("click", function () { sendMessage(chip.dataset.prompt); });
     });
+  }
+
+  function refreshWelcome() {
+    const box = $("#chatMessages");
+    if (!box || !box.querySelector(".cora-welcome-msg")) return;
+    renderWelcome();
   }
 
   function loadSessionIntoChat() {
@@ -394,5 +418,12 @@ const CoraUI = (function () {
     bindEvents();
   }
 
-  return { init: init, sendMessage: sendMessage, getContext: getContext, refreshTools: refreshTools, bindFlashcardButtons: bindFlashcardButtons };
+  return {
+    init: init,
+    sendMessage: sendMessage,
+    getContext: getContext,
+    refreshTools: refreshTools,
+    refreshWelcome: refreshWelcome,
+    bindFlashcardButtons: bindFlashcardButtons
+  };
 })();
