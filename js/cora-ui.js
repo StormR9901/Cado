@@ -33,7 +33,7 @@ const CoraUI = (function () {
       subjectCode: sub?.code,
       toggles: toggles,
       mode: mode,
-      useStructured: true
+      useStructured: false
     };
   }
 
