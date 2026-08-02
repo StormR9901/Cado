@@ -310,20 +310,7 @@
                 <option value="">All subjects</option>
               </select>
             </label>
-            <label class="cora-simple-label">
-              <span>Style</span>
-              <select id="coraModeSelect" class="select cora-simple-select">
-                <option value="teacher">Teacher — explains step by step</option>
-                <option value="exam">Exam — short mark-scheme answers</option>
-                <option value="hint">Hint — guides without full answer</option>
-                <option value="quiz">Quiz — tests you</option>
-              </select>
-            </label>
-            <button type="button" class="btn btn-sm btn-secondary" id="btnCoraTools" aria-expanded="false">Tools</button>
-            <button type="button" class="btn btn-sm btn-secondary" id="btnCoraNewChat">New chat</button>
           </div>
-          <span class="cora-exam-timer hidden" id="coraExamTimer" aria-live="polite"></span>
-          <button type="button" class="btn btn-sm btn-secondary hidden" id="btnCoraEndExam">End exam</button>
         </header>
 
         <div class="chat-messages cora-simple-messages" id="chatMessages"></div>
@@ -337,47 +324,6 @@
         <div id="coraSubjectList" class="hidden" aria-hidden="true"></div>
         <select id="aiSubjectSelect" class="hidden" aria-hidden="true" tabindex="-1"><option value="">General</option></select>
         <span id="coraModeBadge" class="hidden" aria-hidden="true"></span>
-
-        <aside class="cora-tools-sheet hidden" id="coraToolsSheet" aria-label="CORA tools">
-          <div class="cora-tools-sheet-inner">
-            <div class="cora-tools-sheet-head">
-              <h2>Tools</h2>
-              <button type="button" class="cora-tools-close" id="btnCoraToolsClose" aria-label="Close">×</button>
-            </div>
-            <div class="cora-tools-group">
-              <h3>Grade your answer</h3>
-              <p class="cora-tools-hint">Paste a question and your answer — CORA scores it.</p>
-              <input type="text" id="coraMarkQuestion" placeholder="Question (e.g. Explain osmosis)">
-              <textarea id="coraMarkAnswer" rows="3" placeholder="Your answer…"></textarea>
-              <button type="button" class="btn btn-sm btn-primary" id="btnCoraMarkSubmit">Grade answer</button>
-            </div>
-            <div class="cora-tools-group">
-              <h3>Quick actions</h3>
-              <button type="button" class="btn btn-sm btn-secondary cora-tools-action" id="btnCoraFlashGen">🃏 Flashcards from last answer</button>
-              <button type="button" class="btn btn-sm btn-secondary cora-tools-action" id="btnCoraExamSession">⏱️ 45-min exam session</button>
-              <button type="button" class="btn btn-sm btn-secondary cora-tools-action" id="btnCoraClearGlobal">Clear this chat</button>
-              <a href="#" class="cora-tools-link" data-nav="profile">View progress in Learning hub →</a>
-            </div>
-            <div class="cora-tools-group">
-              <h3>Chat history</h3>
-              <div id="coraHistoryList"></div>
-            </div>
-            <div id="coraMarkPanel" class="hidden" aria-hidden="true"></div>
-            <div id="coraProgressPanel" class="hidden" aria-hidden="true"></div>
-            <div id="coraMistakeLog" class="hidden" aria-hidden="true"></div>
-            <div id="coraWeakTopics" class="hidden" aria-hidden="true"></div>
-          </div>
-          <div class="cora-tools-backdrop" id="coraToolsBackdrop"></div>
-        </aside>
-      </div>
-
-      <div class="settings-modal hidden cora-flash-modal" id="coraFlashModal" role="dialog" aria-modal="true">
-        <div class="settings-backdrop" id="coraFlashBackdrop"></div>
-        <div class="settings-panel">
-          <h2>Flashcards from CORA</h2>
-          <div id="coraFlashList"></div>
-          <button type="button" class="btn btn-secondary btn-sm" id="coraFlashClose">Close</button>
-        </div>
       </div>
     </section>
   </main>
