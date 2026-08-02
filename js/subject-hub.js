@@ -582,7 +582,7 @@ const SubjectHub = (function () {
       input.value = "";
       const box = document.getElementById(IDS.chatMessages);
       if (typeof CORA !== "undefined") {
-        CORA.chatInContainer(box, msg, { channel: cfg.subjectId, subjectId: cfg.subjectId, subjectName: cfg.name, subjectCode: cfg.code });
+        CORA.chatInContainer(box, msg, { channel: cfg.subjectId, subjectId: cfg.subjectId, subjectName: cfg.name, subjectCode: cfg.code, useStructured: false });
       }
     });
     form.dataset.bound = "1";
