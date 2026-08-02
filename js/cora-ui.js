@@ -97,50 +97,6 @@ const CoraUI = (function () {
     renderWelcome();
   }
 
-  function loadSessionIntoChat() {
-    const box = $("#chatMessages");
-    if (!box || typeof CoraStore === "undefined") return;
-    const session = CoraStore.getActiveSession();
-    if (!session || !session.messages.length) {
-      renderWelcome();
-      return;
-    }
-    box.innerHTML = "";
-    session.messages.forEach(function (m) {
-      if (m.role === "user") {
-        if (typeof CORA !== "undefined" && CORA.appendUserMessage) CORA.appendUserMessage(box, m.content);
-        else appendUserFallback(box, m.content);
-      } else {
-        appendBotFromStored(box, m.content, m.structured);
-      }
-    });
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function appendUserFallback(container, text) {
-    const div = document.createElement("div");
-    div.className = "message message-user";
-    div.innerHTML = '<div class="message-avatar">You</div><div class="message-bubble"><p>' + escapeHtml(text) + "</p></div>";
-    container.appendChild(div);
-  }
-
-  function appendBotFromStored(container, text, structured) {
-    const div = document.createElement("div");
-    div.className = "message message-bot";
-    let body = "";
-    if (structured && typeof CoraCoach !== "undefined") {
-      // Legacy structured messages saved before this update still render fine.
-      body = CoraCoach.renderStructuredHtml(structured, getContext());
-    } else if (typeof CORA !== "undefined" && CORA.formatHtml) {
-      body = CORA.formatHtml(text);
-    } else {
-      body = "<p>" + escapeHtml(text) + "</p>";
-    }
-    div.innerHTML = '<div class="message-avatar cora-avatar"><img src="assets/cora-logo.png?v=5" alt="CORA" class="cora-logo-img cora-logo-img--icon cora-logo-img--icon-avatar"></div>' +
-      '<div class="message-bubble">' + body + "</div>";
-    container.appendChild(div);
-  }
-
   async function sendMessage(text) {
     const input = $("#chatInput");
     const msg = (text || input?.value || "").trim();
@@ -173,13 +129,10 @@ const CoraUI = (function () {
     if (!$("#coraV2Root")) return;
     renderSubjects();
     if (typeof CoraStore !== "undefined") {
-      CoraStore.ensureSession("");
-      const session = CoraStore.getActiveSession();
-      if (session && session.messages.length) loadSessionIntoChat();
-      else renderWelcome();
-    } else {
-      renderWelcome();
+      CoraStore.createSession("", "New chat");
     }
+    if (typeof CORA !== "undefined" && CORA.clearHistory) CORA.clearHistory("global");
+    renderWelcome();
     bindEvents();
   }
 
