@@ -44,7 +44,7 @@ exports.handler = async function (event) {
         "X-Title": "CADO CORA"
       },
       body: JSON.stringify({
-        model: process.env.OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct:free",
+        model: process.env.OPENROUTER_MODEL || "openai/gpt-oss-20b:free",
         messages: messages,
         temperature: 0.7,
         max_tokens: 1000
