@@ -217,9 +217,26 @@ const BiologyHub = (function () {
       '<div class="bio-comparison-wrap"><table class="bio-comparison-table"><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div></section>";
   }
 
+  function renderVisualBlocks(topic) {
+    if (typeof BiologyVisuals === "undefined") return "";
+    var blocks = topic.visualBlocks;
+    if (!blocks || !blocks.length) return "";
+    var body = blocks.map(function (b) {
+      if (b.type === "hierarchy") return BiologyVisuals.hierarchyPyramid();
+      if (b.type === "kingdomGrid") return BiologyVisuals.kingdomGrid();
+      if (b.type === "groupGrid" && BiologyVisuals[b.dataKey]) return BiologyVisuals.groupGrid(BiologyVisuals[b.dataKey]);
+      return "";
+    }).join("");
+    if (!body) return "";
+    return '<section class="bio-notes-section bio-visual-section">' +
+      '<h3 class="bio-notes-section-title"><span class="bio-notes-section-icon">🎨</span> Meet the groups</h3>' +
+      body + "</section>";
+  }
+
   function renderNotesPanel(topic) {
     var html = renderHighlightBox(topic);
     html += renderObjectives(topic);
+    html += renderVisualBlocks(topic);
     if (topic.chapterSections && topic.chapterSections.length) {
       html += '<section class="bio-notes-section">' +
         '<h3 class="bio-notes-section-title"><span class="bio-notes-section-icon">🧬</span> Chapter breakdown</h3>' +

@@ -2,6 +2,12 @@
  * Biology 5090 - Chapter 2 Classification (full study content)
  */
 const CLASSIFICATION_CHAPTER_5090 = {
+  visualBlocks: [
+    { type: "hierarchy" },
+    { type: "kingdomGrid" },
+    { type: "groupGrid", dataKey: "VERTEBRATE_GROUPS" },
+    { type: "groupGrid", dataKey: "ARTHROPOD_GROUPS" }
+  ],
   learningObjectives: [
     "Explain why organisms are classified.",
     "Define and use the terms species, classification, and binomial nomenclature.",
