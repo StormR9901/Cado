@@ -57,7 +57,11 @@ const BiologyHub = (function () {
   }
 
   function getTopic(id) {
-    return BIOLOGY_5090.topics.find(function (t) { return t.id === id; });
+    var base = BIOLOGY_5090.topics.find(function (t) { return t.id === id; });
+    if (!base) return null;
+    var notes = (typeof BIOLOGY_5090_NOTES !== "undefined" && BIOLOGY_5090_NOTES[id]) || {};
+    var quiz = (typeof BIOLOGY_5090_QUIZ !== "undefined" && BIOLOGY_5090_QUIZ[id]) || {};
+    return Object.assign({}, base, notes, quiz);
   }
 
   function mcqTarget() {
