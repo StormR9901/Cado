@@ -226,14 +226,16 @@ const BiologyHub = (function () {
     var blocks = topic.visualBlocks;
     if (!blocks || !blocks.length) return "";
     var body = blocks.map(function (b) {
-      if (b.type === "hierarchy") return BiologyVisuals.hierarchyPyramid();
-      if (b.type === "kingdomGrid") return BiologyVisuals.kingdomGrid();
-      if (b.type === "groupGrid" && BiologyVisuals[b.dataKey]) return BiologyVisuals.groupGrid(BiologyVisuals[b.dataKey]);
+      if (b.type === "hierarchy") return BiologyVisuals.hierarchyDiagram();
+      if (b.type === "kingdomGrid") return BiologyVisuals.kingdomDiagrams();
+      if (b.type === "vertebrateGrid") return BiologyVisuals.vertebrateDiagrams();
+      if (b.type === "dichotomousKey") return BiologyVisuals.dichotomousKeyDiagram();
+      if (b.type === "cellType") return BiologyVisuals.cellTypeDiagram();
       return "";
     }).join("");
     if (!body) return "";
     return '<section class="bio-notes-section bio-visual-section">' +
-      '<h3 class="bio-notes-section-title"><span class="bio-notes-section-icon">🎨</span> Meet the groups</h3>' +
+      '<h3 class="bio-notes-section-title"><span class="bio-notes-section-icon">📊</span> Diagrams</h3>' +
       body + "</section>";
   }
 

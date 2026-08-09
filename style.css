@@ -3759,85 +3759,80 @@ html[data-font-size="large"] { font-size: 18px; }
   color: var(--text-muted);
 }
 
-/* ---------- Fun SVG mascot diagrams ---------- */
-@keyframes bioMascotFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(-2deg); }
+/* ---------- Exam-style labeled diagrams ---------- */
+@keyframes bioDiagramIn {
+  0% { transform: translateY(6px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes bioMascotPop {
-  0% { transform: scale(0.6); opacity: 0; }
-  70% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); }
-}
-
-.bio-visual-section .bio-notes-section-title {
-  background: linear-gradient(90deg, #a855f7, #06b6d4, #22c55e);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bio-mascot-grid {
+.bio-diagram-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 0.85rem;
   margin-bottom: 1.1rem;
 }
 
-.bio-mascot-grid--sm {
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-}
-
-.bio-mascot-card {
+.bio-diagram-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.35rem;
-  padding: 1rem 0.75rem 0.9rem;
+  gap: 0.3rem;
+  padding: 0.85rem 0.75rem 0.9rem;
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, color-mix(in srgb, var(--mascot-color, var(--primary)) 14%, var(--bg-elevated)), var(--bg-elevated));
-  border: 1px solid color-mix(in srgb, var(--mascot-color, var(--primary)) 30%, var(--border));
-  animation: bioMascotPop 0.4s ease both;
-  transition: transform var(--transition), box-shadow var(--transition);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  animation: bioDiagramIn 0.35s ease both;
+  transition: box-shadow var(--transition), border-color var(--transition);
 }
 
-.bio-mascot-card:hover {
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--mascot-color, var(--primary)) 45%, transparent);
+.bio-diagram-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow);
 }
 
-.bio-mascot-card:hover .bio-mascot-svg {
-  animation: bioMascotFloat 1.1s ease-in-out infinite;
+.bio-diagram-figure {
+  width: 100%;
+  aspect-ratio: 250 / 150;
 }
 
-.bio-mascot-avatar {
-  width: 64px;
-  height: 64px;
-}
-
-.bio-mascot-card--sm .bio-mascot-avatar {
-  width: 52px;
-  height: 52px;
-}
-
-.bio-mascot-svg {
+.bio-diagram-svg {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-.bio-mascot-card strong {
+.bio-diagram-card strong {
   font-size: 0.86rem;
   font-weight: 800;
   color: var(--text);
 }
 
-.bio-mascot-card span {
+.bio-diagram-card span {
   font-size: 0.74rem;
   line-height: 1.35;
   color: var(--text-muted);
+}
+
+.bio-diagram-single {
+  margin-bottom: 1.1rem;
+  padding: 0.9rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.bio-diagram-svg--wide {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bio-diagram-caption {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 /* ---------- Classification hierarchy pyramid ---------- */
@@ -3855,23 +3850,22 @@ html[data-font-size="large"] { font-size: 18px; }
   align-items: center;
   justify-content: center;
   height: 34px;
+  padding: 0 0.75rem;
   border-radius: 8px;
   color: #fff;
   font-weight: 700;
   font-size: 0.82rem;
   letter-spacing: 0.02em;
   box-shadow: var(--shadow);
-  background: linear-gradient(
-    90deg,
-    hsl(calc(150 + var(--row-i) * 20), 70%, 50%),
-    hsl(calc(170 + var(--row-i) * 20), 75%, 45%)
-  );
-  transition: transform var(--transition);
+  background: linear-gradient(90deg, #0f766e, #0369a1);
 }
 
-.bio-pyramid-row:hover {
-  transform: scaleX(1.03);
-}
+.bio-pyramid-row:nth-child(2) { background: linear-gradient(90deg, #0369a1, #4338ca); }
+.bio-pyramid-row:nth-child(3) { background: linear-gradient(90deg, #4338ca, #7e22ce); }
+.bio-pyramid-row:nth-child(4) { background: linear-gradient(90deg, #7e22ce, #a21caf); }
+.bio-pyramid-row:nth-child(5) { background: linear-gradient(90deg, #a21caf, #be185d); }
+.bio-pyramid-row:nth-child(6) { background: linear-gradient(90deg, #be185d, #b91c1c); }
+.bio-pyramid-row:nth-child(7) { background: linear-gradient(90deg, #b91c1c, #b45309); }
 
 .bio-pyramid-caption {
   margin: 0.5rem 0 0;

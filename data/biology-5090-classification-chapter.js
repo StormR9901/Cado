@@ -4,9 +4,10 @@
 const CLASSIFICATION_CHAPTER_5090 = {
   visualBlocks: [
     { type: "hierarchy" },
+    { type: "cellType" },
     { type: "kingdomGrid" },
-    { type: "groupGrid", dataKey: "VERTEBRATE_GROUPS" },
-    { type: "groupGrid", dataKey: "ARTHROPOD_GROUPS" }
+    { type: "vertebrateGrid" },
+    { type: "dichotomousKey" }
   ],
   learningObjectives: [
     "Explain why organisms are classified.",
