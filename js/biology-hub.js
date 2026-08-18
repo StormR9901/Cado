@@ -74,13 +74,19 @@ const BiologyHub = (function () {
       '<div class="bio-progress-bar"><div class="bio-progress-fill" style="width:' + pct + '%"></div></div></div>';
   }
 
+  function hubMascot(size) {
+    const src = (window.CADO_SUBJECT_MASCOTS || {}).biology;
+    return src ? '<img src="' + src + '" alt="" class="' + size + '" aria-hidden="true" loading="lazy">' : "";
+  }
+
   function renderShell() {
     return '<div class="lms-bio">' +
       '<div class="lms-bio-header">' +
       '<button type="button" class="btn-back" id="btnBackBiology"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Subjects</button>' +
       '<div class="lms-bio-title"><span class="lms-bio-icon">' + BIOLOGY_5090.icon + '</span>' +
       '<div><h1>Biology <span class="lms-code">' + BIOLOGY_5090.code + '</span></h1>' +
-      '<p class="lms-bio-sub">19 chapters · Notes · 15 flashcards · 40 MCQs · 5 theory questions per chapter</p></div></div>' +
+      '<p class="lms-bio-sub">19 chapters · Notes · 15 flashcards · 40 MCQs · 5 theory questions per chapter</p></div>' +
+      hubMascot("lms-bio-mascot") + '</div>' +
       progressBarHtml() +
       '</div><div id="bioAppRoot"></div></div>';
   }
@@ -111,8 +117,9 @@ const BiologyHub = (function () {
   }
 
   function renderEmptyMain() {
+    const mascot = hubMascot("bio-hub-empty-mascot");
     return '<div class="bio-hub-empty">' +
-      '<div class="bio-hub-empty-icon" aria-hidden="true">🧬</div>' +
+      (mascot || '<div class="bio-hub-empty-icon" aria-hidden="true">🧬</div>') +
       '<h3>Pick a chapter to begin</h3>' +
       '<p class="lms-screen-hint">Each chapter has clear notes, 15 flashcards, 40 MCQs, and 5 theory questions — built for Cambridge 5090.</p></div>';
   }
@@ -472,7 +479,9 @@ const BiologyHub = (function () {
       if (opts) opts.innerHTML = "";
       if (scoreEl) {
         scoreEl.classList.remove("hidden");
-        scoreEl.textContent = mcqScore / mcqDeck.length >= 0.75 ? "Excellent!" : "Keep practising — read explanations.";
+        const excellent = mcqScore / mcqDeck.length >= 0.75;
+        const mascot = hubMascot(excellent ? "bio-mcq-mascot bio-mcq-mascot--excellent" : "bio-mcq-mascot");
+        scoreEl.innerHTML = mascot + '<span>' + (excellent ? "Excellent!" : "Keep practising — read explanations.") + '</span>';
       }
       BiologyProgress.recordMcq(activeTopicId, mcqScore, mcqDeck.length);
       return;

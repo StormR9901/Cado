@@ -95,13 +95,19 @@ const SubjectHub = (function () {
       '<div class="bio-progress-bar" role="progressbar" aria-valuenow="' + pct + '"><div class="bio-progress-fill" style="width:' + fillW + '%"></div></div></div>';
   }
 
+  function hubMascot(size) {
+    const src = (window.CADO_SUBJECT_MASCOTS || {})[cfg.subjectId];
+    return src ? '<img src="' + src + '" alt="" class="' + size + '" aria-hidden="true" loading="lazy">' : "";
+  }
+
   function renderShell() {
     return '<div class="lms-bio lms-subject-hub" style="--subject-accent:' + cfg.color + '">' +
       '<div class="lms-bio-header">' +
       '<button type="button" class="btn-back" id="' + BACK_BTN_ID + '"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Subjects</button>' +
       '<div class="lms-bio-title"><span class="lms-bio-icon">' + getData().icon + '</span>' +
       '<div><h1>' + cfg.name + ' <span class="lms-code">' + getData().code + '</span></h1>' +
-      '<p class="lms-bio-sub">' + getData().topics.length + ' chapters · Interactive notes · Games · XP · 15 flashcards · 40 MCQs per chapter</p></div></div>' +
+      '<p class="lms-bio-sub">' + getData().topics.length + ' chapters · Interactive notes · Games · XP · 15 flashcards · 40 MCQs per chapter</p></div>' +
+      hubMascot("lms-bio-mascot") + '</div>' +
       progressBarHtml() +
       (cfg.lms && cfg.lms.renderShellExtra ? cfg.lms.renderShellExtra() : "") +
       '</div><div id="' + APP_ROOT_ID + '"></div></div>';
@@ -133,8 +139,9 @@ const SubjectHub = (function () {
   }
 
   function renderEmptyMain() {
+    const mascot = hubMascot("bio-hub-empty-mascot");
     return '<div class="bio-hub-empty">' +
-      '<div class="bio-hub-empty-icon" aria-hidden="true">' + cfg.icon + '</div>' +
+      (mascot || '<div class="bio-hub-empty-icon" aria-hidden="true">' + cfg.icon + '</div>') +
       '<h3>Pick a chapter to begin</h3>' +
       '<p class="lms-screen-hint">Each chapter has clear notes, 15 flashcards, 40 MCQs, and 5 theory questions — built for Cambridge ' + cfg.code + '.</p></div>';
   }
@@ -520,7 +527,9 @@ const SubjectHub = (function () {
       if (opts) opts.innerHTML = "";
       if (scoreEl) {
         scoreEl.classList.remove("hidden");
-        scoreEl.textContent = mcqScore / mcqDeck.length >= 0.75 ? "Excellent!" : "Keep practising — read explanations.";
+        const excellent = mcqScore / mcqDeck.length >= 0.75;
+        const mascot = hubMascot(excellent ? "bio-mcq-mascot bio-mcq-mascot--excellent" : "bio-mcq-mascot");
+        scoreEl.innerHTML = mascot + '<span>' + (excellent ? "Excellent!" : "Keep practising — read explanations.") + '</span>';
       }
       clearMcqTimer();
       PROG.recordMcq(activeTopicId, mcqScore, mcqDeck.length);
