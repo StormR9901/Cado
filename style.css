@@ -10,12 +10,12 @@
   --font-serif: "Fraunces", Georgia, serif;
   --font-mono-brand: "JetBrains Mono", monospace;
 
-  --bg: #f8fafc;
+  --bg: var(--cado-paper);
   --bg-elevated: #ffffff;
-  --bg-muted: #f1f5f9;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
+  --bg-muted: #f3e9e6;
+  --text: var(--cado-ink);
+  --text-muted: #7a6a6e;
+  --border: #e8dcd8;
   --primary: var(--cado-maroon);
   --primary-hover: var(--cado-oxblood);
   --primary-soft: rgba(122, 31, 61, 0.1);
@@ -851,28 +851,27 @@ main, .header, .footer { position: relative; z-index: 1; }
   margin-bottom: 2.5rem;
 }
 
-.hero--brand .hero-stats {
+.hero-stats-band {
+  max-width: 1100px;
+  margin: -2.75rem auto 2.5rem;
+  padding: 0 1.25rem;
   position: relative;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(8px);
+  z-index: 2;
 }
-
-.hero--brand .stat strong { color: var(--cado-gold); }
-.hero--brand .stat span { color: rgba(255, 255, 255, 0.75); }
 
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 0.85rem;
   padding: 1.35rem 1.25rem;
-  background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-lg);
 }
+
+.hero-stats .stat strong { color: var(--cado-maroon); }
+.hero-stats .stat span { color: var(--text-muted); }
 
 .stat strong {
   display: block;
