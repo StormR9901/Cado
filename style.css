@@ -100,15 +100,17 @@ body {
   z-index: 0;
   background:
     radial-gradient(ellipse 85% 55% at 50% -15%, var(--primary-soft), transparent),
-    radial-gradient(ellipse 50% 35% at 100% 10%, rgba(6, 182, 212, 0.1), transparent),
-    radial-gradient(ellipse 40% 30% at 0% 80%, rgba(16, 185, 129, 0.06), transparent);
+    radial-gradient(ellipse 50% 35% at 100% 10%, rgba(184, 135, 59, 0.08), transparent),
+    radial-gradient(ellipse 40% 30% at 0% 80%, rgba(122, 31, 61, 0.05), transparent);
 }
 
 [data-theme="dark"] .app-bg {
   background:
-    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(129, 140, 248, 0.12), transparent),
-    radial-gradient(ellipse 45% 35% at 90% 20%, rgba(6, 182, 212, 0.08), transparent);
+    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(226, 163, 184, 0.1), transparent),
+    radial-gradient(ellipse 45% 35% at 90% 20%, rgba(184, 135, 59, 0.08), transparent);
 }
+
+[data-zone="marketing"] .app-bg { display: none; }
 
 main, .header, .footer { position: relative; z-index: 1; }
 
@@ -692,6 +694,7 @@ main, .header, .footer { position: relative; z-index: 1; }
   position: relative;
   max-width: none;
   width: 100vw;
+  margin-top: -2rem;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   padding: 3.5rem 1.5rem 4.5rem;
@@ -709,10 +712,17 @@ main, .header, .footer { position: relative; z-index: 1; }
 
 .hero-sticker {
   position: absolute;
-  font-size: 2.6rem;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
-  opacity: 0.95;
+  width: 56px;
+  height: 56px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
+
+.hero-sticker svg { width: 100%; height: 100%; }
 
 .hero-sticker--brain { top: 14%; left: 4%; transform: rotate(-8deg); }
 .hero-sticker--book { top: 46%; left: 9%; transform: rotate(-4deg); }
@@ -772,7 +782,7 @@ main, .header, .footer { position: relative; z-index: 1; }
   margin-bottom: 1rem;
 }
 
-.btn-hero {
+.hero--brand .btn-hero {
   background: #d9d9d9;
   color: var(--cado-oxblood);
   font-size: 1.1rem;
@@ -780,7 +790,7 @@ main, .header, .footer { position: relative; z-index: 1; }
   border-radius: 100px;
 }
 
-.btn-hero:hover {
+.hero--brand .btn-hero:hover {
   background: #fff;
 }
 
