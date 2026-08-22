@@ -77,7 +77,6 @@
     $$(".view").forEach((v) => v.classList.remove("view-active"));
     const el = $(`#view-${name}`) || $(`[data-view="${name}"]`);
     if (el) el.classList.add("view-active");
-    document.body.dataset.zone = name === "home" ? "marketing" : "app";
     $$(".nav-link, .nav-dashboard").forEach((n) => {
       const nav = n.dataset.nav;
       if (!nav) return;
